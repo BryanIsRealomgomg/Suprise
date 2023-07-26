@@ -1,35 +1,119 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Bryan</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta charset="UTF-8">
+    <title>Game Title</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Hi Bryan</h1>
-    <p>So um</p>
-    <p>I wanted to publish a website pero it didn't work, so I had other plans..</p>
-
-    <!-- Buttons -->
-    <div class="buttons">
-        <button id="continueButton">Continue mo sis..</button>
+    <div id="instructions" class="popup">
+        <h1>Welcome to the Game</h1>
+        <p>
+            now how do we get out of this hell hole? this place is confusing, i need your help. 
+        </p>
+        <button id="startButton">Continue</button>
     </div>
-
-    <!-- Hidden paragraph -->
-    <p id="hiddenParagraph" style="display: none;">hi there bbggg so um, i really can't afford shit bro, so i hope my coding will let you know that you're special to me. (btw click the image.)
-        <!-- Image button -->
-        <a href="#" id="imageButton">
-            <img src="bryan.jpeg" alt="Hidden Image">
-        </a>
-    </p>
-
-    <!-- Hidden content -->
-    <div id="hiddenContent" style="display: none;">
-        <button id="newButton">Start Sudoku Game ni bryan</button>
-        <div id="sudokuBoard" style="display: none;">
-            <!-- The Sudoku grid will be generated here -->
-        </div>
+    <div id="gameContainer" class="fade-out">
+        <!-- Doors will be added dynamically using JavaScript -->
     </div>
+    
+    <!-- Add the pixel man's video -->
+    <video id="pixelManVideo" src="pre.mp4" autoplay muted loop></video>
 
-    <script src="script.js"></script>
+    <script>
+        // JavaScript code
+        const instructionsDiv = document.getElementById("instructions");
+        const gameContainerDiv = document.getElementById("gameContainer");
+        const pixelManVideo = document.getElementById("pixelManVideo");
+
+        const doorImages = [
+            "door1.png",
+            "door2.png",
+            "door3.png",
+            "door4.png",
+            "door5.png",
+            "door6.png",
+            "door7.png",
+            "door8.png",
+            "door9.png",
+            "door10.png"
+        ];
+
+        function startGame() {
+            instructionsDiv.classList.add("fade-out");
+            gameContainerDiv.classList.remove("fade-out");
+            pixelManVideo.style.display = "block";
+            pixelManVideo.play();
+
+            setTimeout(function() {
+                pixelManVideo.classList.add("fade-out");
+                showDoors();
+            }, 15000);
+        }
+
+        function shuffleArray(array) {
+            const shuffledArray = array.slice();
+            for (let i = shuffledArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+            }
+            return shuffledArray;
+        }
+
+        function showDoors() {
+            pixelManVideo.style.display = "none";
+            pixelManVideo.pause();
+
+            const doorPositions = generateSequentialPositions(doorImages.length);
+
+            const doorContainer = document.createElement("div");
+            doorContainer.className = "door-container";
+
+            for (let i = 0; i < doorImages.length; i++) {
+                const door = document.createElement("div");
+                door.className = "door";
+                
+                const doorImage = document.createElement("img");
+                doorImage.src = doorImages[i];
+                door.appendChild(doorImage);
+
+                door.style.width = "100px";
+                door.style.height = "100px";
+
+                door.style.left = doorPositions[i].x + "px";
+                door.style.top = doorPositions[i].y + "px";
+                
+                doorContainer.appendChild(door);
+            }
+
+            gameContainerDiv.appendChild(doorContainer);
+        }
+
+        function generateSequentialPositions(count) {
+            const positions = [];
+            const containerWidth = gameContainerDiv.offsetWidth;
+            const containerHeight = gameContainerDiv.offsetHeight;
+
+            const columns = Math.ceil(Math.sqrt(count));
+            const rows = Math.ceil(count / columns);
+
+            const stepX = Math.floor(containerWidth / columns);
+            const stepY = Math.floor(containerHeight / rows);
+
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < columns; j++) {
+                    const posX = j * stepX;
+                    const posY = i * stepY;
+                    positions.push({ x: posX, y: posY });
+                }
+            }
+
+            return positions;
+        }
+
+        document.getElementById("startButton").addEventListener("click", function() {
+            setTimeout(startGame, 500); // Adding a small delay before starting the game
+        });
+    </script>
 </body>
 </html>
